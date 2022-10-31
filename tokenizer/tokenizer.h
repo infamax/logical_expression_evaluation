@@ -1,8 +1,7 @@
 #pragma once
 
 #include <variant>
-#include <optional>
-#include <istream>
+#include <vector>
 
 struct SymbolToken {
     std::string name;
@@ -22,6 +21,7 @@ struct ConstantToken {
     bool operator==(const ConstantToken&) const;
 };
 
+
 enum class BracketToken {
     OPEN_PAREN,
     CLOSE_PAREN,
@@ -31,7 +31,11 @@ enum class BracketToken {
     CURLY_CLOSE_BRACKET,
 };
 
-using Token = std::variant<SymbolToken, LogicalToken, ConstantToken, BracketToken>;
+struct EmptyToken {
+    bool operator==(const EmptyToken& other) const;
+};
+
+using Token = std::variant<SymbolToken, LogicalToken, ConstantToken, BracketToken, EmptyToken>;
 
 class Tokenizer {
 public:
@@ -42,10 +46,13 @@ public:
     void Next();
 
     Token GetToken();
-
 private:
+    Token ReadToken();
     std::istream* in_;
-    char token;
+    Token token;
+    bool is_end_ = false;
 };
+
+std::vector<Token> Read(const std::string& s);
 
 
