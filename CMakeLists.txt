@@ -9,8 +9,6 @@ message("CXX_FLAGS " ${CMAKE_CXX_STANDARD})
 enable_testing()
 
 if (BUILD_TESTING)
-# lc   include(CTest)
-#    find_package(GTest REQUIRED)
     include(FetchContent)
     FetchContent_Declare(
             googletest
@@ -20,12 +18,10 @@ if (BUILD_TESTING)
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
 
-    #add_executable(${PROJECT_NAME} tests/run_all_tests.cpp main.cpp)
-    #add_subdirectory(tests)
-#else()
-#    add_executable(${PROJECT_NAME} main.cpp)
 endif()
 
 add_subdirectory(tokenizer)
+add_subdirectory(syntax_analyzer)
+add_subdirectory(node)
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} logical_expression_tokenizer)
