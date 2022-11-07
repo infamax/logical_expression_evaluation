@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
 #include <node.h>
+
 #include <memory>
+#include <unordered_map>
 
 TEST(logical_node_tests, simple_expression_test) {
     // expression x ^ 1 = !x
@@ -253,5 +255,61 @@ TEST(logical_node_tests, hard_expression_test2) {
     x = 1;
     y = 1;
     z = 1;
+    ASSERT_EQ(expr->Evaluate(), 1);
+}
+
+TEST(logical_node_tests, test_using_map) {
+    // expression x -> y & z
+    std::unordered_map<std::string, int> vars = {
+            {"x", 0},
+            {"y", 0},
+            {"z", 0}
+    };
+
+    auto var1 = std::make_shared<VariableNode>(vars["x"]);
+    auto var2 = std::make_shared<VariableNode>(vars["y"]);
+    auto var3 = std::make_shared<VariableNode>(vars["z"]);
+
+    auto and_op = std::make_shared<LogicalOperationNode>(Op::AND, var2, var3);
+    auto expr = std::make_shared<LogicalOperationNode>(Op::IMPLICATION, var1, and_op);
+
+    vars["x"] = 0;
+    vars["y"] = 0;
+    vars["z"] = 0;
+    ASSERT_EQ(expr->Evaluate(), 1);
+
+    vars["x"] = 0;
+    vars["y"] = 0;
+    vars["z"] = 1;
+    ASSERT_EQ(expr->Evaluate(), 1);
+
+    vars["x"] = 0;
+    vars["y"] = 1;
+    vars["z"] = 0;
+    ASSERT_EQ(expr->Evaluate(), 1);
+
+    vars["x"] = 0;
+    vars["y"] = 1;
+    vars["z"] = 1;
+    ASSERT_EQ(expr->Evaluate(), 1);
+
+    vars["x"] = 1;
+    vars["y"] = 0;
+    vars["z"] = 0;
+    ASSERT_EQ(expr->Evaluate(), 0);
+
+    vars["x"] = 1;
+    vars["y"] = 0;
+    vars["z"] = 1;
+    ASSERT_EQ(expr->Evaluate(), 0);
+
+    vars["x"] = 1;
+    vars["y"] = 1;
+    vars["z"] = 0;
+    ASSERT_EQ(expr->Evaluate(), 0);
+
+    vars["x"] = 1;
+    vars["y"] = 1;
+    vars["z"] = 1;
     ASSERT_EQ(expr->Evaluate(), 1);
 }
