@@ -25,4 +25,10 @@ add_subdirectory(syntax_analyzer)
 add_subdirectory(node)
 add_subdirectory(parser)
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} logical_expression_tokenizer)
+target_link_libraries(
+        ${PROJECT_NAME}
+        logical_expression_tokenizer
+        logical_node
+        logical_expression_syntax_analyzer
+        logical_expression_parser
+)
